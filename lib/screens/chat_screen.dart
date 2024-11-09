@@ -48,9 +48,11 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     final modelProvider = Provider.of<ModelsProvider>(context, listen: false);
     final chatProvider = Provider.of<ChatProvider>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Allam'),
+        title: const Text('لسان العرب',
+            style: TextStyle(color: Colors.white)),
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Image.asset(AssetsManager.openaiLogo),
@@ -60,9 +62,7 @@ class _ChatScreenState extends State<ChatScreen> {
             onPressed: () async {
               await Services.showModelSheet(context: context);
             },
-            icon: const Icon(              Icons.more_vert,
-              color: Colors.white,
-            ),
+            icon: const Icon(Icons.more_vert, color: Colors.white),
           ),
         ],
       ),
@@ -70,13 +70,18 @@ class _ChatScreenState extends State<ChatScreen> {
         child: Column(
           children: [
             Flexible(
-              child: ListView.builder(
-                controller: _listScrollController,
-                itemCount: chatProvider.getChatListLength,
-                itemBuilder: (context, index) {
-                  return ChatWidget(
-                    msg: chatProvider.getChatList[index].msg,
-                    chatIndex: chatProvider.getChatList[index].chatIndex,
+              child: Consumer<ChatProvider>(
+                builder: (context, chatProvider, child) {
+                  return ListView.builder(
+                    controller: _listScrollController,
+                    itemCount: chatProvider.getChatListLength,
+                    itemBuilder: (context, index) {
+                      final message = chatProvider.getChatList[index];
+                      return ChatWidget(
+                        msg: message.msg,
+                        chatIndex: message.chatIndex,
+                      );
+                    },
                   );
                 },
               ),
@@ -130,6 +135,7 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
+
   void scrollListToEnd() {
     _listScrollController.animateTo(
       _listScrollController.position.maxScrollExtent,
@@ -138,28 +144,34 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  Future<void> _sendMessageFCT(
-      {required ModelsProvider modelProvider,
-      required ChatProvider chatProvider}) async {
+  Future<void> _sendMessageFCT({
+    required ModelsProvider modelProvider,
+    required ChatProvider chatProvider,
+  }) async {
     final String msg = _textEditingController.text;
+
+    setState(() {
+      _isTyping = true;
+      chatProvider.addUserMessage(msg: msg);
+      _textEditingController.clear();
+      _focusNode.unfocus();
+    });
+    print("Started typing...");
+
     try {
-      setState(() {
-        _isTyping = true;
-        chatProvider.addUserMessage(msg: msg);
-        _textEditingController.clear();
-        _focusNode.unfocus();
-      });
       await chatProvider.sendMessageAndGetResponse(msg: msg);
     } catch (error) {
       errorSnackBar(errMsg: error.toString());
-      print('error--> $error');
+      print('Error in _sendMessageFCT: $error');
     } finally {
       setState(() {
         scrollListToEnd();
-        _isTyping = false;
+        _isTyping = false; // Reset typing indicator here
       });
+      print("Stopped typing...");
     }
   }
+
 
   void errorSnackBar({required String errMsg}) {
     ScaffoldMessenger.of(context).showSnackBar(

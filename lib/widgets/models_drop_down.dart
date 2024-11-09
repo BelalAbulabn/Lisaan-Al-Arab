@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../models/models_model.dart';
 
-class ModelsDropDown extends StatefulWidget {
+/*class ModelsDropDown extends StatefulWidget {
   const ModelsDropDown({super.key});
 
   @override
@@ -20,7 +20,7 @@ class _ModelsDropDownState extends State<ModelsDropDown> {
     String currentModel = modelProvider.currentModel;
 
     return FutureBuilder<List<ModelsModel>>(
-      future: modelProvider.getAllModelsProvider,
+      //future: modelProvider.getAllModelsProvider,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Center(
@@ -55,6 +55,7 @@ class _ModelsDropDownState extends State<ModelsDropDown> {
                 ),
               );
       },
-    );
+    )
   }
 }
+;*/

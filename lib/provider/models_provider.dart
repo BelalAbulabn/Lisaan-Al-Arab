@@ -5,9 +5,9 @@ import '../services/api_service.dart';
 class ModelsProvider with ChangeNotifier {
   String currentModel = 'sdaia/allam-1-13b-instruct';
 
-  Future<List<ModelsModel>> get getAllModelsProvider {
-    return ApiService.getModels();
-  }
+  //Future<List<ModelsModel>> get getAllModelsProvider async {
+    //return await ApiService.getModels();
+  //}
 
   String get getCurrentModel {
     return currentModel;

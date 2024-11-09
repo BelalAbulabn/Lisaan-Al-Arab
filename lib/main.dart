@@ -29,6 +29,13 @@ class MyApp extends StatelessWidget {
           appBarTheme: AppBarTheme(color: cardColor),
         ),
         home: const ChatScreen(),
+        locale: const Locale('ar'), // Set Arabic locale for RTL support
+        builder: (context, child) {
+          return Directionality(
+            textDirection: TextDirection.rtl, // Set global RTL direction
+            child: child!,
+          );
+        },
       ),
     );
   }

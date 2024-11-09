@@ -1,33 +1,48 @@
 import 'package:flutter/material.dart';
-import '../models/chat_model.dart';
 import '../services/api_service.dart';
 
 class ChatProvider with ChangeNotifier {
-  final List<ChatModel> _chatList = [];
-  List<ChatModel> get getChatList => _chatList;
+  List<ChatMessage> _messages = [
+    ChatMessage(msg: "السلام عليكم! معك المعتز بالله، كيف أخدمك؟", chatIndex: 1), // Initial welcome message from bot
+  ];
 
-  int get getChatListLength => _chatList.length;
+  List<ChatMessage> get getChatList => _messages;
+
+  int get getChatListLength => _messages.length;
 
   void addUserMessage({required String msg}) {
-    _chatList.add(ChatModel(msg: msg, chatIndex: 0));
+    _messages.add(ChatMessage(msg: msg, chatIndex: 0)); // chatIndex 0 for user
     notifyListeners();
   }
 
   Future<void> sendMessageAndGetResponse({required String msg}) async {
-    try {
-      // Get response from API
-      String response = await ApiService.sendMessage(message: msg);
+    print("Adding 'Typing...' placeholder");
+    _messages.add(ChatMessage(msg: 'أفكر...', chatIndex: 1));
+    notifyListeners(); // Update UI to show "typing..."
 
-      // Add bot response
-      _chatList.add(ChatModel(msg: response, chatIndex: 1));
-      notifyListeners();
-    } catch (error) {
-      // Handle errors
-      _chatList.add(ChatModel(
-        msg: 'An error occurred: $error',
-        chatIndex: 1,
-      ));
-      notifyListeners();
+    try {
+      // Send message to API and receive response
+      String response = await ApiService.sendMessage(msg);
+      print("Received response: $response");
+
+      // Replace "typing..." with actual response
+      _messages.removeLast(); // Remove the "typing..." placeholder
+      _messages.add(ChatMessage(msg: response, chatIndex: 1)); // Add bot response
+    } catch (e) {
+      // Handle error by replacing "typing..." with an error message
+      print("Error receiving response: $e");
+      _messages.removeLast();
+      _messages.add(ChatMessage(msg: 'Error: $e', chatIndex: 1));
     }
+
+    print("Notifying listeners with updated messages");
+    notifyListeners(); // Update UI to reflect the new message
   }
+}
+
+class ChatMessage {
+  final String msg;
+  final int chatIndex;
+
+  ChatMessage({required this.msg, required this.chatIndex});
 }

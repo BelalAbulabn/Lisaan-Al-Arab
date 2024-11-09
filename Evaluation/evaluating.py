@@ -50,7 +50,7 @@ Your evaluation (0 to 1):'''}
                 return None
 
 def main():
-    input_file = 'testdata_outputgpt4.jsonl'     # Replace with your JSONL file path
+    input_file = 'modified_finedtunedv3.jsonl'     # Replace with your JSONL file path
     output_file = 'result_outputgpt4.csv'   # Output CSV file
 
     with open(input_file, 'r', encoding='utf-8') as jsonl_file, \
