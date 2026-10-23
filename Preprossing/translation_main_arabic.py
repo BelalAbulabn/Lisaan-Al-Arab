@@ -1,9 +1,10 @@
+import os
 import pandas as pd
 import openai
 import time
 
 # Set your OpenAI API key
-openai.api_key = 'sk-proj-ETFsJX268RMex0DnMBXLT3BlbkFJte8z9HsVVPtrYCLYsxja'
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # Load the CSV file
 df = pd.read_csv('imagenet_b_darija.csv')

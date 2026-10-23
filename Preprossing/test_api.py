@@ -18,7 +18,7 @@ def get_iam_token(api_key):
 # Replace with your actual API key, project ID, and model ID
 SERVICE_URL = 'https://eu-de.ml.cloud.ibm.com'
 
-API_KEY = 'A7fCX7J8EARR85DLvSAyrMoKNCD13ICvnmHbpvNENZNR'
+API_KEY = os.getenv("IBM_API_KEY")
 PROJECT_ID = 'b5976110-fe74-4388-b42f-ec08a9fad675'
 MODEL_ID = 'sdaia/allam-1-13b-instruct'
 # Replace these with your actual API key and project ID

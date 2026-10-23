@@ -5,7 +5,7 @@ import os
 import time
 
 # Set your OpenAI API key securely
-openai.api_key = "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" # Make sure this environment variable is set
+openai.api_key = os.getenv("OPENAI_API_KEY") # Make sure this environment variable is set
 
 def evaluate_output(input_text, original_output, fine_tuned_output, retries=3, delay=5):
     messages = [
